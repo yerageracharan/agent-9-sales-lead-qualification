@@ -1,60 +1,37 @@
 from __future__ import annotations
 
-from urllib.parse import quote_plus
+import os
 
 import pandas as pd
 import streamlit as st
 
 from prospect_scout import (
-    build_search_queries,
     load_prospects,
     make_csv,
     save_prospects,
     scan_website,
 )
+from web_search import search_web_for_prospects
 
 st.set_page_config(page_title="Prospect Scout", page_icon="🔎", layout="wide")
 st.title("Prospect Scout")
-st.caption("Evidence-first prospect discovery and reachability research for small-business services.")
+st.caption("Live web discovery + evidence-based prospect qualification.")
 
-st.info(
-    "This is a human-in-the-loop research tool. It does not scrape Google Maps, harvest social networks, "
-    "send emails or messages, submit forms, or bypass website access rules. Search for candidate businesses, "
-    "paste their official website URLs, and let the scanner check public contact routes."
-)
+def get_tavily_key() -> str:
+    key = os.getenv("TAVILY_API_KEY", "").strip()
+    try:
+        key = str(st.secrets.get("TAVILY_API_KEY", key)).strip() or key
+    except Exception:
+        pass
+    return key
 
-with st.sidebar:
-    st.header("Search setup")
-    niche = st.text_input("Business niche", value="HVAC contractor")
-    metro = st.text_input("US city or metro area", placeholder="e.g. Dallas, TX")
-    if metro.strip():
-        try:
-            queries = build_search_queries(niche, metro)
-            st.markdown("**Open a search in your browser**")
-            for index, query in enumerate(queries, start=1):
-                url = "https://www.google.com/search?q=" + quote_plus(query)
-                st.markdown(f"{index}. [Search: {query}]({url})")
-            st.caption("Search results are discovery leads. Verify each business on its own official website.")
-        except ValueError as exc:
-            st.warning(str(exc))
 
-st.subheader("1. Add candidate business websites")
-urls_text = st.text_area(
-    "Paste official website URLs, one per line",
-    height=150,
-    placeholder="https://example-hvac.com\nhttps://another-heating-company.com",
-)
-max_pages = st.slider("Maximum same-site pages per company", min_value=1, max_value=6, value=5)
-
-if st.button("Scan websites", type="primary", disabled=not urls_text.strip()):
-    raw_urls = [line.strip() for line in urls_text.splitlines() if line.strip()]
-    unique_urls = list(dict.fromkeys(raw_urls))[:30]
-    if len(raw_urls) > 30:
-        st.warning("The first 30 unique URLs will be scanned in this run.")
+def scan_and_save(urls: list[str], max_pages: int) -> list[dict]:
+    unique_urls = list(dict.fromkeys(url.strip() for url in urls if url.strip()))[:30]
     progress = st.progress(0)
-    results = []
+    results: list[dict] = []
     for index, url in enumerate(unique_urls, start=1):
-        with st.spinner(f"Checking {url}"):
+        with st.spinner(f"Inspecting {url}"):
             try:
                 results.append(scan_website(url, max_pages=max_pages))
             except Exception as exc:
@@ -79,18 +56,19 @@ if st.button("Scan websites", type="primary", disabled=not urls_text.strip()):
                     "service_relevance": False,
                 })
         progress.progress(index / len(unique_urls))
-    st.session_state["scan_results"] = results
-    successful = [r for r in results if r.get("status") == "scanned"]
+    successful = [row for row in results if row.get("status") == "scanned"]
     if successful:
         save_prospects(successful)
-    st.success(f"Finished. {len(successful)} websites scanned; {len(results) - len(successful)} need manual review.")
+    st.session_state["scan_results"] = results
+    st.success(f"Completed {len(results)} scans. {len(successful)} were successful.")
+    return results
 
-results = st.session_state.get("scan_results", [])
-saved = load_prospects()
 
-st.subheader("2. Review the prospects")
-display_records = results if results else saved
-if display_records:
+def render_results(display_records: list[dict]) -> None:
+    if not display_records:
+        st.caption("No saved prospects yet. Search the web or paste official business websites above.")
+        return
+
     rows = []
     for item in display_records:
         rows.append({
@@ -98,11 +76,11 @@ if display_records:
             "Reachability": item.get("reachability_score", 0),
             "Tier": item.get("reachability_tier", "Low"),
             "Best route": item.get("recommended_route", ""),
-            "Email": "Yes" if item.get("emails") else "No",
-            "Contact form": "Yes" if item.get("contact_form_detected") else "No",
-            "Facebook": "Yes" if item.get("facebook_url") else "No",
-            "Instagram": "Yes" if item.get("instagram_url") else "No",
-            "HVAC signals": "Yes" if item.get("service_relevance") else "Not detected",
+            "Email": "Found" if item.get("emails") else "Not found",
+            "Contact form": "Found" if item.get("contact_form_detected") else "Not found",
+            "Facebook": "Found" if item.get("facebook_url") else "Not found",
+            "Instagram": "Found" if item.get("instagram_url") else "Not found",
+            "HVAC signals": "Found" if item.get("service_relevance") else "Not detected",
             "Status": item.get("status", ""),
         })
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
@@ -114,20 +92,21 @@ if display_records:
             st.write("**Recommended route:**", item.get("recommended_route", ""))
             if item.get("emails"):
                 st.write("**Public email(s):**", ", ".join(item["emails"]))
-                st.caption("Publicly displayed does not mean monitored or deliverable.")
+                st.caption("Publicly displayed does not mean monitored, deliverable, or read.")
             if item.get("decision_maker_mentions"):
                 st.write("**Possible decision-maker mentions:**", ", ".join(item["decision_maker_mentions"]))
-                st.caption("Verify the name and role manually before addressing a message.")
+                st.caption("These are text matches, not verified identities. Check the company's team/about page.")
             if item.get("facebook_url"):
                 st.write("**Facebook:**", item["facebook_url"])
             if item.get("instagram_url"):
                 st.write("**Instagram:**", item["instagram_url"])
             if item.get("phone_links"):
                 st.write("**Published phone link(s):**", ", ".join(item["phone_links"]))
-                st.caption("Recorded as public site information only; phone is not included in the reachability score.")
-            st.write("**Pages checked:**")
-            for page in item.get("pages_checked", []):
-                st.markdown(f"- {page}")
+                st.caption("Recorded only; not used for outreach or reachability scoring.")
+            if item.get("pages_checked"):
+                st.write("**Pages checked:**")
+                for page in item.get("pages_checked", []):
+                    st.markdown(f"- {page}")
             st.write("**Evidence and observations:**")
             for observation in item.get("observations", []):
                 st.markdown(f"- {observation}")
@@ -139,29 +118,89 @@ if display_records:
         file_name="prospect-scout-results.csv",
         mime="text/csv",
     )
-else:
-    st.caption("No saved prospects yet. Add a few official business websites above to begin.")
 
-st.subheader("3. How to interpret the score")
+
+st.subheader("1. Search the live web for businesses")
+with st.sidebar:
+    st.header("Prospect search")
+    niche = st.text_input("Business niche", value="HVAC contractor")
+    metro = st.text_input("US city or metro area", placeholder="e.g. Dallas, TX")
+    max_pages = st.slider("Pages to inspect per business", min_value=1, max_value=6, value=5)
+
+tavily_key = get_tavily_key()
+if not tavily_key:
+    st.warning(
+        "Live search is not connected yet. Create a free Tavily API key, then add it as "
+        "TAVILY_API_KEY in your local environment or Streamlit secrets. Never commit the key to GitHub."
+    )
+else:
+    st.success("Live web search is connected.")
+
+if st.button("Search web for prospects", type="primary", disabled=not (tavily_key and metro.strip())):
+    try:
+        with st.spinner("Searching the public web..."):
+            st.session_state["discovery_results"] = search_web_for_prospects(
+                tavily_key, niche, metro, max_results_per_query=8
+            )
+        st.success(f"Found {len(st.session_state['discovery_results'])} candidate pages. Verify official business websites before scanning.")
+    except Exception as exc:
+        st.error(str(exc))
+
+discovery_results = st.session_state.get("discovery_results", [])
+if discovery_results:
+    st.write("Search results are candidates, not verified companies. Directory pages and unrelated results may appear.")
+    for index, item in enumerate(discovery_results, start=1):
+        with st.expander(f"{index}. {item.get('title') or item.get('domain')}"):
+            st.markdown(f"[Open result]({item.get('url')})")
+            st.caption(item.get("domain", ""))
+            st.write(item.get("snippet", ""))
+            st.caption(f"Search relevance: {item.get('search_score', 0):.2f} · Query: {item.get('query', '')}")
+
+    verified_options = {
+        f"{item.get('title') or item.get('domain')} — {item.get('domain')}": item.get("url")
+        for item in discovery_results
+    }
+    selected_labels = st.multiselect(
+        "Select results you have confirmed are official company websites",
+        options=list(verified_options.keys()),
+        help="Do not select directory, social-network, or aggregator pages as company websites.",
+    )
+    if st.button("Inspect selected company websites", disabled=not selected_labels):
+        scan_and_save([verified_options[label] for label in selected_labels], max_pages)
+
+st.divider()
+st.subheader("2. Or paste business websites manually")
+urls_text = st.text_area(
+    "Official website URLs, one per line",
+    height=120,
+    placeholder="https://example-hvac.com\nhttps://another-heating-company.com",
+)
+if st.button("Inspect pasted websites", disabled=not urls_text.strip()):
+    raw_urls = [line.strip() for line in urls_text.splitlines() if line.strip()]
+    if len(raw_urls) > 30:
+        st.warning("Only the first 30 unique URLs will be inspected.")
+    scan_and_save(raw_urls, max_pages)
+
+st.divider()
+st.subheader("3. Qualified prospect list")
+current_results = st.session_state.get("scan_results", [])
+saved = load_prospects()
+render_results(current_results if current_results else saved)
+
+st.subheader("How to interpret reachability")
 st.markdown(
     """
-    - **High (7–10):** several usable, non-phone contact routes were found.
-    - **Medium (4–6):** at least one plausible digital route exists, but verify the route.
-    - **Low (0–3):** limited digital reachability evidence; do not spend audit time here first.
+    - **High (7–10):** several digital contact signals were found on the scanned website.
+    - **Medium (4–6):** at least one plausible digital route exists.
+    - **Low (0–3):** few digital contact signals were detected.
 
-    The score is a prioritisation heuristic, not a probability of response or purchase.
-    Email presence is not inbox verification. A contact form is not proof that a person reads submissions.
+    This is a prioritisation heuristic, not a probability of response or purchase.
+    A published email is not proof that an inbox is monitored. A social link is not proof that a page is active.
+    Manually verify the owner/manager, official website, and contact route before outreach.
     """
 )
 
-st.subheader("Suggested workflow")
-st.markdown(
-    """
-    1. Pick one US metro and one business niche.
-    2. Use the search links to find candidate businesses through public search results or industry directories.
-    3. Open the company's own website and copy its URL here.
-    4. Prioritise prospects with more than one verified digital contact route.
-    5. Manually review the website evidence and the current social pages before contacting anyone.
-    6. Track replies and opt-outs in your own CRM; do not send bulk automated messages from this app.
-    """
+st.caption(
+    "Safety and data boundaries: this app searches through Tavily's API, then inspects only selected public company URLs. "
+    "It does not scrape Google Maps or social networks, bypass robots.txt, submit forms, send DMs/emails, or make calls."
 )
