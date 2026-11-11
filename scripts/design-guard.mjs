@@ -56,6 +56,8 @@ for (const path of ["site/index.html", ...pages]) {
   check(links.every(url=>url.startsWith(canonicalBase) || url.startsWith("#")), `${path}: links/assets must use canonical GitHub Pages origin`);
   check(!links.some(url=>/hide.?out/i.test(url)), `${path}: legacy hideout domain found in a link`);
   check(html.includes('rel="canonical"'), `${path}: canonical URL tag is required`);
+  check(html.includes('const canonicalHost = "yerageracharan.github.io"'), `${path}: legacy-host redirect guard is required`);
+  check(html.includes('window.location.replace('), `${path}: canonical redirect must execute on legacy hosts`);
 }
 const cssFiles = readdirSync(join(root,"site/assets"));
 check(cssFiles.includes("site.css"),"shared stylesheet must exist");
