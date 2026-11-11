@@ -22,6 +22,11 @@ on:
 permissions:
   contents: read
 
+# Keep only the newest visual review for a branch/ref.
+concurrency:
+  group: design-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   design-quality:
     runs-on: ubuntu-latest
