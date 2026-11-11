@@ -30,6 +30,7 @@ const banned = [
   [/letter-spacing\s*:\s*\.0[1-9]\w*/i,"tracked label typography"]
 ];
 for (const [pattern,label] of banned) check(!pattern.test(css), `CSS contains forbidden pattern: ${label}`);
+check(!/letter-spacing\\s*:\\s*-\\s*(?:\\d*\\.?\\d+)em/i.test(css),"display typography must not use negative tracking");
 check(/html,body\s*\{[^}]*overflow-x\s*:\s*clip/s.test(css),"html and body must clip horizontal overflow");
 check(/:focus-visible\s*\{/.test(css),"visible focus style is required");
 check(/prefers-reduced-motion\s*:\s*reduce/.test(css),"reduced-motion support is required");
