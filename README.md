@@ -1,6 +1,6 @@
 # Agent 09 — Prospect Scout
 
-An evidence-first prospect research workspace for finding reachable small-business prospects. Live web discovery uses an optional Tavily API key; Tavily currently offers 1,000 free API credits per month without requiring a credit card.
+An evidence-first prospect research workspace for finding reachable small-business prospects. Live web discovery uses Tavily's keyless mode by default (with shared limits) or an optional personal Tavily API key.
 
 **Initial focus:** independent US HVAC contractors and their non-phone digital contact routes.
 
@@ -58,19 +58,18 @@ Open the local URL printed by Streamlit, usually http://localhost:8501.
 
 ### Enable live web search
 
-1. Create a free Tavily account at https://www.tavily.com/ and copy your API key from its dashboard.
-2. In the same PowerShell window, set the key before starting the app:
+Live web search works by default using Tavily's shared keyless mode, which has fair-use limits and may be rate-limited. You do not need an API key to try the initial workflow.
+
+For higher or more predictable capacity, create a Tavily account at https://www.tavily.com/, copy your API key, and add it as `TAVILY_API_KEY` to your local environment or Streamlit Community Cloud secrets. Never paste the key into source code, commit it to GitHub, or share it in a chat.
+
+For a local Windows run, set the key before starting the app:
 
 ~~~powershell
 $env:TAVILY_API_KEY = "tvly-your-key-here"
 py -m streamlit run app.py
 ~~~
 
-You can also add TAVILY_API_KEY to Streamlit secrets when deploying the app. Never paste the key into source code, commit it to GitHub, or share it in a chat.
-
-Tavily currently lists 1,000 API credits per month on its free Researcher plan, with no credit card required. Prospect Scout makes two basic search requests per discovery run; website scanning is separate and does not use Tavily credits.
-
-Or double-click run_windows.bat after setting TAVILY_API_KEY in the PowerShell session that launches it.
+Prospect Scout makes two basic search requests per discovery run; website scanning is separate from Tavily search credits.
 
 ## How to use it
 
