@@ -20,7 +20,7 @@ The memorable element is the work artefact itself: each company gets a bespoke r
 - Signal ink: `#5A3911`
 - Completed work: `#477467`
 
-Typography uses a condensed industrial display face (Impact / Arial Narrow fallback) for large headlines and a neutral system sans for reading. Data values use tabular numerals where needed. Small labels stay in sentence case and the body face.
+Typography uses a wider neutral sans display face (Arial / Helvetica fallback) with open letter spacing for headlines and a neutral system sans for reading. Do not use condensed display faces for long headlines. Avoid negative tracking on headings; keep letter spacing at normal and use line-height around 1.02–1.12. Data values use tabular numerals where needed. Small labels stay in sentence case and the body face.
 
 ## Layout rules
 - Use asymmetrical editorial composition; left-align headings and copy.
@@ -35,7 +35,7 @@ Typography uses a condensed industrial display face (Impact / Arial Narrow fallb
 Do not introduce:
 - Purple/blue gradients, radial gradient washes or decorative gradients.
 - Generic white card stacks, nested cards, floating rounded dashboards or fake browser/OS windows.
-- Eyebrow headers, tracked all-caps labels, small-caps labels or decorative micro-labels.
+- Eyebrow headers, tracked all-caps labels, small-caps labels, decorative micro-labels, or tightly tracked/condensed headline typography.
 - Repetitive centered hero blocks, repeated 3-card metrics, generic feature grids or fake testimonials.
 - Pill buttons, decorative status dots, emoji icons, arrows appended to link labels or middle-dot meta strings.
 - Monospace labels as decoration, italic emphasis inside headings, or one highlighted word in a headline.
