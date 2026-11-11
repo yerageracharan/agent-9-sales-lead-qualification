@@ -172,24 +172,40 @@ The repository includes a GitHub Actions workflow. After adding the secret once,
 
 The workflow uses GitHub-hosted compute. It does not run on your PC. Search candidates and contact-route findings are leads requiring human review; a published email is not verified as monitored. The workflow does not send outreach or submit enquiry forms.
 
-## Independent HVAC concept previews
+## HVAC workflow concept walkthroughs
 
-The repository also contains five static product concept previews in `site/`. They are unsolicited, clearly labelled concepts—not official company websites or commissioned builds. All names only identify the intended business context; all sample people, requests, and metrics are fictional. The forms are local-only demos and do not send or store customer data.
+The `site/` directory contains five guided, future-state walkthroughs for specific HVAC business contexts. They are designed as product stories, not simulated CRMs: each follows a realistic scenario and shows the work artefact, decision, handoff and customer/office outcome.
 
-Preview concepts:
-- Optimized Mechanical — multi-service request pipeline
-- Barron's — free-estimate intake and estimate status
-- Rojas & Sons — property-manager service request desk
-- Ordine's — booking-verification queue (their public site already advertises an after-hours AI booking assistant)
-- 3H AC — two-visit annual maintenance agreement tracker
+- Optimized Mechanical — request routing across residential, commercial and construction work
+- Barron's Air Conditioning — estimate preparation and customer follow-through
+- Rojas & Sons — property-service coordination, access and manager updates
+- Ordine's HVAC — booking verification before confirmation
+- 3H AC of Tampa — fulfilment of a two-visit annual maintenance agreement
 
-### Enable the preview site
+The sample scenarios, names, dates and records are fictional. The pages are independent concepts, not official company websites, commissioned projects, live integrations or claims about how these businesses currently operate. They are deliberately marked `noindex,nofollow`.
 
-1. Open **Settings → Pages** for this repository.
-2. Under **Build and deployment → Source**, select **GitHub Actions**.
-3. Open **Actions → Deploy HVAC concept previews** and select **Run workflow**.
+## Design system and quality checks
 
-The workflow publishes `site/` to the GitHub Pages project URL:
+- `PRODUCT.md` defines the visitor, job-to-be-done and trust boundaries.
+- `DESIGN.md` defines the visual system and explicit anti-patterns.
+- `CLAUDE.md` gives Claude Code project-level design and review instructions.
+- `scripts/design-guard.mjs` checks the design contract.
+- `tests/site-smoke.mjs` exercises scene launch, back/next/replay, keyboard navigation, no-JavaScript fallback and mobile overflow with Playwright.
+- `.github/workflows/design-quality.yml` runs the Impeccable detector, project guard and browser smoke tests on site changes. It uploads mobile screenshots as an artifact.
+
+Run the checks locally:
+
+~~~bash
+node scripts/design-guard.mjs
+npm install --no-save playwright
+npx playwright install chromium
+node tests/site-smoke.mjs
+~~~
+
+## Publishing
+
+GitHub Pages is configured to publish the `site/` directory through the **Deploy HVAC concept previews** GitHub Actions workflow. Once the deployment run succeeds, the landing page is:
+
 `https://yerageracharan.github.io/agent-9-sales-lead-qualification/`
 
-Individual previews live under `/previews/<company-slug>/`. The site is intentionally marked `noindex` and is publicly accessible to anyone with the URL once Pages is enabled. Do not enter real customer information.
+Individual pages use `/previews/<company-slug>/`. Do not send a preview link until the latest Pages deployment has succeeded and the page has been opened and reviewed.
