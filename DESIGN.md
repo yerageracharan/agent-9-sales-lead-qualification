@@ -20,7 +20,7 @@ The memorable element is the work artefact itself: each company gets a bespoke r
 - Signal ink: `#5A3911`
 - Completed work: `#477467`
 
-Typography uses a wider neutral sans display face (Arial / Helvetica fallback) with open letter spacing for headlines and a neutral system sans for reading. Do not use condensed display faces for long headlines. Avoid negative tracking on headings; keep letter spacing at normal and use line-height around 1.02–1.12. Data values use tabular numerals where needed. Small labels stay in sentence case and the body face.
+Typography pairs IBM Plex Serif for editorial display with IBM Plex Sans for reading and interface text (Georgia and system sans fallbacks). Do not use condensed display faces for long headlines. Avoid negative tracking on headings; keep letter spacing at normal and use line-height around 1.02–1.12. Data values use tabular numerals where needed. Small labels stay in sentence case and the body face.
 
 ## Layout rules
 - Use asymmetrical editorial composition; left-align headings and copy.
