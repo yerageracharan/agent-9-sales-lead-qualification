@@ -293,3 +293,52 @@ h1,h2,h3{font-weight:700}
   .page-property .story-controls,.page-maintenance .story-controls{grid-column:auto}
   .page-property .step-rule,.page-maintenance .step-rule{grid-column:auto}
 }
+
+
+
+/* Legibility and hierarchy corrections from the first Impeccable render audit. */
+:root{--steel:#45565D}
+.message{border-left-width:2px}
+.landing-note{border-left-width:2px}
+.paper-sheet{padding:30px}
+.sheet-title h2{font-family:var(--display);font-size:28px;line-height:1.02;margin:0}
+.takeaway span,.sheet-field span,.process-step,.message span,.property-details span{font-size:12px}
+.sheet-field{padding:14px}
+.calendar-cell,.calendar-cell small,.month span,.month b,.visit-item p,.visit-item li{font-size:12px}
+.status{font-size:12px}
+.disclaimer{font-size:12px}
+.landing-note{font-size:13px}
+.visit-item li{padding:9px 0}
+.property-details{padding-left:24px}
+.page-estimate{--signal:#F0C47B;--signal-ink:#4C3115}
+.page-property{--signal:#E5C77E;--signal-ink:#4C431F}
+.page-booking{--signal:#F0C96D;--signal-ink:#403112}
+.page-maintenance{--signal:#E9D09A;--signal-ink:#41351E}
+.page-property .hero-art--paper .property-number{color:var(--signal-ink)}
+.page-property .hero-art--paper .property-number small{color:var(--steel)}
+.page-property .hero-art--paper .property-details{border-color:#9DADA6;padding:12px 0 12px 24px}
+.page-property .hero-art--paper .property-details span{color:var(--steel)}
+.page-property .hero-art--paper .property-details strong{color:var(--ink)}
+.page-property .hero-art--paper .hero-note{color:var(--steel)}
+.hero-art--calendar .month span{color:var(--steel)}
+.hero-art--calendar .month b{color:var(--ink)}
+.hero-art--calendar .month.visit b,.hero-art--calendar .month.renew b{color:var(--signal-ink)}
+.hero-art--calendar .month.visit{border-color:var(--signal-ink)}
+.hero-art--calendar .month.renew{border-color:var(--signal-ink)}
+.page-booking .hero-art .art-heading,
+.page-booking .hero-art .dispatch-route span,
+.page-booking .hero-art .hero-note,
+.page-booking .scene-board .scene-top,
+.page-booking .scene-board .scene-sub,
+.page-booking .scene-board .data-row span,
+.page-booking .scene-board .process-step,
+.page-booking .scene-board .status.neutral,
+.page-booking .scene-board .board-table th{color:#F5F7F5}
+.page-booking .hero-art .art-heading strong,
+.page-booking .scene-board .scene-top strong,
+.page-booking .scene-board .message span{color:var(--signal)}
+.page-booking .scene-board .message{color:#F5F7F5}
+@media(max-width:580px){
+  .paper-sheet{padding:18px}
+  .page-property .hero-art--paper .property-details{padding:14px 0 0;border-left:0}
+}
