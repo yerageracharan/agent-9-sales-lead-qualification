@@ -128,19 +128,16 @@ with st.sidebar:
     max_pages = st.slider("Pages to inspect per business", min_value=1, max_value=6, value=5)
 
 tavily_key = get_tavily_key()
-if not tavily_key:
-    st.warning(
-        "Live search is not connected yet. Create a free Tavily API key, then add it as "
-        "TAVILY_API_KEY in your local environment or Streamlit secrets. Never commit the key to GitHub."
-    )
+if tavily_key:
+    st.success("Tavily connected using your personal API key.")
 else:
-    st.success("Live web search is connected.")
+    st.info("Live web search is available in limited shared keyless mode. Add your own TAVILY_API_KEY later if you need more capacity.")
 
-if st.button("Search web for prospects", type="primary", disabled=not (tavily_key and metro.strip())):
+if st.button("Search web for prospects", type="primary", disabled=not metro.strip()):
     try:
         with st.spinner("Searching the public web..."):
             st.session_state["discovery_results"] = search_web_for_prospects(
-                tavily_key, niche, metro, max_results_per_query=8
+                tavily_key or None, niche, metro, max_results_per_query=8
             )
         st.success(f"Found {len(st.session_state['discovery_results'])} candidate pages. Verify official business websites before scanning.")
     except Exception as exc:
