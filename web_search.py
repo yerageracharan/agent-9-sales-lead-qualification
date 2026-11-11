@@ -4,9 +4,9 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-import httpx
+from tavily import TavilyClient, TavilyKeylessLimitError
 
-TAVILY_ENDPOINT = "https://api.tavily.com/search"
+
 DEFAULT_MAX_RESULTS = 8
 MAX_TOTAL_RESULTS = 30
 
@@ -35,62 +35,33 @@ def _is_web_url(url: str) -> bool:
 
 
 def search_web_for_prospects(
-    api_key: str,
+    api_key: str | None,
     niche: str,
     metro: str,
     max_results_per_query: int = DEFAULT_MAX_RESULTS,
 ) -> list[dict[str, Any]]:
-    """Search the public web using Tavily and return deduplicated candidate pages.
+    """Search the public web using Tavily's keyless or authenticated SDK.
 
-    Search results are leads, not verified business records. The app does not
-    crawl search result pages, submit forms, scrape social networks, or send
-    messages. A person must confirm that a result is the company's official site.
+    Without an API key, Tavily's shared keyless search quota applies. Search
+    results are leads, not verified business records. A person must confirm
+    that a result is the company's official website before scanning it.
     """
-    if not api_key or not api_key.strip():
-        raise ValueError("TAVILY_API_KEY is missing. Add your key to the local environment or Streamlit secrets.")
-
     queries = build_prospect_queries(niche, metro)
     limit = max(1, min(int(max_results_per_query), DEFAULT_MAX_RESULTS))
-    timeout = httpx.Timeout(20.0, connect=8.0)
+    client = TavilyClient(api_key=api_key.strip()) if api_key and api_key.strip() else TavilyClient()
     candidates: dict[str, dict[str, Any]] = {}
 
-    with httpx.Client(timeout=timeout) as client:
+    try:
         for query in queries:
-            try:
-                response = client.post(
-                    TAVILY_ENDPOINT,
-                    headers={
-                        "Authorization": f"Bearer {api_key.strip()}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "query": query,
-                        "search_depth": "basic",
-                        "topic": "general",
-                        "max_results": limit,
-                        "include_answer": False,
-                        "include_raw_content": False,
-                        "include_images": False,
-                        "include_favicon": False,
-                        "country": None,
-                        "language": "en",
-                    },
-                )
-            except httpx.TimeoutException as exc:
-                raise RuntimeError("Tavily search timed out. Try again with a shorter query.") from exc
-            except httpx.HTTPError as exc:
-                raise RuntimeError(f"Could not reach Tavily: {type(exc).__name__}") from exc
+            payload = client.search(
+                query,
+                search_depth="basic",
+                max_results=limit,
+                include_answer=False,
+                include_raw_content=False,
+                include_images=False,
+            )
 
-            if response.status_code == 401:
-                raise RuntimeError("Tavily rejected the API key. Check that TAVILY_API_KEY is correct.")
-            if response.status_code == 429:
-                raise RuntimeError("Tavily rate limit reached. Wait before searching again.")
-            if response.status_code in {432, 433, 434}:
-                raise RuntimeError("Tavily usage limit reached. Check your account's remaining credits.")
-            if response.status_code >= 400:
-                raise RuntimeError(f"Tavily returned HTTP {response.status_code}: {response.text[:300]}")
-
-            payload = response.json()
             for row in payload.get("results", []):
                 url = str(row.get("url", "")).strip()
                 if not _is_web_url(url):
@@ -111,6 +82,18 @@ def search_web_for_prospects(
                     "source": "Tavily web search",
                     "official_website_verified": False,
                 }
+    except TavilyKeylessLimitError as exc:
+        raise RuntimeError(
+            "Tavily's shared keyless search limit has been reached. "
+            "Try again later or add your own TAVILY_API_KEY for a separate quota."
+        ) from exc
+    except Exception as exc:
+        message = str(exc)
+        if "401" in message or "unauthorized" in message.lower():
+            raise RuntimeError("Tavily rejected the API key. Check TAVILY_API_KEY.") from exc
+        if "429" in message or "rate limit" in message.lower():
+            raise RuntimeError("Tavily rate limit reached. Wait before searching again.") from exc
+        raise RuntimeError(f"Tavily search failed: {type(exc).__name__}: {message[:220]}") from exc
 
     ordered = sorted(
         candidates.values(),
