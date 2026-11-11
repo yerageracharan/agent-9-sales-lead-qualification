@@ -44,6 +44,11 @@ try {
     record((await page.locator("h1").innerText()).trim().length>0,`${slug}: page headline missing`);
     record(await page.locator("[data-scene]").count()===5,`${slug}: narrative scene count is not five`);
     record(await page.locator("[data-visual]").count()===5,`${slug}: visual scene count is not five`);
+    const linkAudit = await page.locator("a[href],link[href],script[src]").evaluateAll(nodes =>
+      nodes.map(node => node.getAttribute("href") || node.getAttribute("src")).filter(Boolean)
+    );
+    record(linkAudit.every(url => url.startsWith("https://yerageracharan.github.io/agent-9-sales-lead-qualification/") || url.startsWith("#")), `${slug}: internal link or asset uses a non-canonical origin`);
+    record(!linkAudit.some(url => /hide.?out/i.test(url)), `${slug}: legacy hideout domain found in a link`);
 
     await page.locator("[data-start]").click();
     record(await page.locator(".story.enhanced").count()===1,`${slug}: hero launch did not activate the walkthrough`);
