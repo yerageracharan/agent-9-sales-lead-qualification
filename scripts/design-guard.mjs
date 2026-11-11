@@ -49,6 +49,14 @@ for (const path of pages) {
   check(/<h1>/.test(html), `${path}: missing page headline`);
   check(/site\.js/.test(html), `${path}: missing shared scene controller`);
 }
+const canonicalBase = "https://yerageracharan.github.io/agent-9-sales-lead-qualification/";
+for (const path of ["site/index.html", ...pages]) {
+  const html = readFileSync(join(root,path),"utf8");
+  const links = [...html.matchAll(/(?:href|src)=["']([^"']+)["']/gi)].map(match=>match[1]);
+  check(links.every(url=>url.startsWith(canonicalBase) || url.startsWith("#")), `${path}: links/assets must use canonical GitHub Pages origin`);
+  check(!links.some(url=>/hide.?out/i.test(url)), `${path}: legacy hideout domain found in a link`);
+  check(html.includes('rel="canonical"'), `${path}: canonical URL tag is required`);
+}
 const cssFiles = readdirSync(join(root,"site/assets"));
 check(cssFiles.includes("site.css"),"shared stylesheet must exist");
 if (errors.length) {
