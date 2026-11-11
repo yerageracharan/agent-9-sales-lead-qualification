@@ -5,3 +5,4 @@ __pycache__/
 data/*.sqlite
 data/*.db
 *.py[cod]
+.streamlit/secrets.toml
