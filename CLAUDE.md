@@ -12,6 +12,11 @@ Before changing website design or front-end code, read `PRODUCT.md` and `DESIGN.
 7. Run the browser check in CI: `node tests/site-smoke.mjs` after installing Playwright and Chromium.
 8. Run `npx impeccable detect site/` when the Impeccable CLI is available. Resolve real findings; do not silence a rule to preserve an accidental style.
 
+## Typography constraints
+- Use the wider Arial/Helvetica display stack defined in `DESIGN.md`, not Impact or Arial Narrow.
+- Do not use negative letter-spacing on headings or wordmarks. Keep display tracking at normal and line-height open enough for multi-line reading.
+- Review headline kerning and word spacing at 1440px and 375px before approval.
+
 ## Non-negotiable visual constraints
 - No purple/blue gradients, radial washes, generic floating cards, nested cards or fake browser chrome.
 - No tracked all-caps labels, eyebrow headers, fake testimonials, decorative micro-labels or generic metrics.
