@@ -10,7 +10,7 @@
   --signal:#E8A13A;
   --signal-ink:#5A3911;
   --good:#477467;
-  --display:Impact,"Arial Narrow",Haettenschweiler,sans-serif;
+  --display:"Arial","Helvetica Neue",Helvetica,sans-serif;
   --body:"Segoe UI",Arial,Helvetica,sans-serif;
   --measure:1180px;
   --gutter:clamp(20px,4vw,54px);
@@ -354,4 +354,27 @@ h1,h2,h3{font-weight:700}
 @media(max-width:580px){
   .page-property .hero-art .property-details,
   .page-property .scene-board .property-details{border-left:0;padding:16px 16px 0}
+}
+
+
+/* Typography refinement: wider letterforms, open tracking, less compressed headlines. */
+.brand{font-weight:800;letter-spacing:0}
+.hero h1{font-size:clamp(46px,5.35vw,74px);font-weight:800;line-height:1.02;letter-spacing:0}
+.art-title{font-weight:800;font-size:clamp(28px,3vw,39px);line-height:1.08;letter-spacing:0}
+.section-title{font-weight:800;line-height:1.12;letter-spacing:0}
+.scene-copy h3{font-weight:800;font-size:clamp(32px,3.65vw,47px);line-height:1.06;letter-spacing:0}
+.scene-heading{font-weight:800;font-size:clamp(28px,3vw,39px);line-height:1.08;letter-spacing:0}
+.sheet-title h2,.sheet-title h4{font-weight:800;line-height:1.08;letter-spacing:0}
+.sheet-ref{font-weight:800;letter-spacing:0}
+.property-number{font-weight:800;letter-spacing:0;line-height:.98}
+.visit-item h4{font-weight:800;letter-spacing:0;line-height:1.08}
+.closing h2{font-weight:800;letter-spacing:0;line-height:1.08}
+.landing-hero h1{font-size:clamp(48px,6.2vw,82px);font-weight:800;line-height:1.02;letter-spacing:0}
+.landing-art h2{font-weight:800;line-height:1.08;letter-spacing:0}
+.directory-row h3{font-weight:800;line-height:1.08;letter-spacing:0}
+@media(max-width:580px){
+  .hero h1{font-size:clamp(42px,12vw,54px);line-height:1.03}
+  .scene-copy h3{font-size:clamp(31px,9vw,39px);line-height:1.07}
+  .scene-heading{font-size:clamp(27px,8vw,34px);line-height:1.08}
+  .landing-hero h1{font-size:clamp(45px,13vw,59px);line-height:1.03}
 }
