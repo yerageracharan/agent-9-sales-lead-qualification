@@ -1,0 +1,47 @@
+name: Design quality checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "DESIGN.md"
+      - "scripts/design-guard.mjs"
+      - "tests/site-smoke.mjs"
+      - ".github/workflows/design-quality.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "DESIGN.md"
+      - "scripts/design-guard.mjs"
+      - "tests/site-smoke.mjs"
+      - ".github/workflows/design-quality.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  design-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the design contract
+        run: node scripts/design-guard.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test the five walkthroughs
+        run: node tests/site-smoke.mjs
+      - name: Upload mobile review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fieldwork-design-review
+          path: artifacts/design-review/*.png
+          if-no-files-found: ignore
