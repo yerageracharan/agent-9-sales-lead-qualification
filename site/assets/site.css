@@ -1,4 +1,5 @@
-/* FIELDWORK DESIGN SYSTEM | editorial field-service engineering | signature: the work artefact | revision 2026-11-12 */
+/* FIELDWORK DESIGN SYSTEM | editorial field-service engineering | signature: the work artefact | typography revision */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap');
 :root{
   --paper:#E7ECE8;
   --sheet:#F8FAF6;
@@ -10,8 +11,8 @@
   --signal:#E8A13A;
   --signal-ink:#5A3911;
   --good:#477467;
-  --display:"Arial","Helvetica Neue",Helvetica,sans-serif;
-  --body:"Segoe UI",Arial,Helvetica,sans-serif;
+  --display:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans","Segoe UI",Arial,Helvetica,sans-serif;
   --measure:1180px;
   --gutter:clamp(20px,4vw,54px);
 }
@@ -27,7 +28,7 @@ h1,h2,h3,p{margin-top:0}
 h1,h2,h3{font-weight:700}
 .shell{width:min(var(--measure),100% - 2*var(--gutter));margin-inline:auto}
 .masthead{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:23px;line-height:1;color:var(--ink);letter-spacing:0}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--body);font-size:23px;line-height:1;color:var(--ink);letter-spacing:0}
 .brand-mark{display:block;width:10px;height:25px;background:var(--signal);border:1px solid var(--ink)}
  .mast-link{font-size:13px;color:var(--steel);text-decoration:none}
 .mast-link:hover{color:var(--ink);text-decoration:underline}
