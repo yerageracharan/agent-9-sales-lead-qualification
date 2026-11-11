@@ -49,6 +49,8 @@ try {
     );
     record(linkAudit.every(url => url.startsWith("https://yerageracharan.github.io/agent-9-sales-lead-qualification/") || url.startsWith("#")), `${slug}: internal link or asset uses a non-canonical origin`);
     record(!linkAudit.some(url => /hide.?out/i.test(url)), `${slug}: legacy hideout domain found in a link`);
+    const redirectGuard = await page.locator("head script").allTextContents();
+    record(redirectGuard.some(script => script.includes('canonicalHost = "yerageracharan.github.io"') && script.includes("window.location.replace")), `${slug}: canonical-host redirect guard missing`);
 
     await page.locator("[data-start]").click();
     record(await page.locator(".story.enhanced").count()===1,`${slug}: hero launch did not activate the walkthrough`);
