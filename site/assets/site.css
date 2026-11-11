@@ -345,3 +345,13 @@ h1,h2,h3{font-weight:700}
   .page-property .hero-art--paper .property-details{padding:14px 16px 0;border-left:0}
   .property-details{padding:14px 16px 0}
 }
+
+
+/* Scene-specific contrast and padding audit corrections. */
+.page-booking .scene-board .hero-note{color:#F5F7F5}
+.page-property .hero-art .property-details,
+.page-property .scene-board .property-details{padding:16px 16px 16px 24px}
+@media(max-width:580px){
+  .page-property .hero-art .property-details,
+  .page-property .scene-board .property-details{border-left:0;padding:16px 16px 0}
+}
