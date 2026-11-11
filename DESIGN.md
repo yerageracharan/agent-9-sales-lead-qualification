@@ -57,3 +57,13 @@ Do not introduce:
 - Reduced-motion preference must suppress nonessential animation.
 - Content should remain readable with JavaScript disabled.
 - Run `node scripts/design-guard.mjs` and the Playwright smoke test before publishing.
+
+## Page-specific compositions
+The system is shared, but the composition must follow the artefact rather than repeat one page template:
+- Optimized Mechanical: dispatch lanes and a shared queue.
+- Barron's: estimate jacket first; the document leads the composition.
+- Rojas & Sons: wide property service record with the request context in view.
+- Ordine's: appointment review with more horizontal space for the schedule.
+- 3H AC: full-width annual calendar; the agreement timeline leads the page.
+
+Do not homogenise these into identical hero/feature/card sections.
