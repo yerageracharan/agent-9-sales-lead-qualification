@@ -171,3 +171,25 @@ The repository includes a GitHub Actions workflow. After adding the secret once,
 5. After the workflow completes, open the run and download the prospects artifact.
 
 The workflow uses GitHub-hosted compute. It does not run on your PC. Search candidates and contact-route findings are leads requiring human review; a published email is not verified as monitored. The workflow does not send outreach or submit enquiry forms.
+
+## Independent HVAC concept previews
+
+The repository also contains five static product concept previews in `site/`. They are unsolicited, clearly labelled concepts—not official company websites or commissioned builds. All names only identify the intended business context; all sample people, requests, and metrics are fictional. The forms are local-only demos and do not send or store customer data.
+
+Preview concepts:
+- Optimized Mechanical — multi-service request pipeline
+- Barron's — free-estimate intake and estimate status
+- Rojas & Sons — property-manager service request desk
+- Ordine's — booking-verification queue (their public site already advertises an after-hours AI booking assistant)
+- 3H AC — two-visit annual maintenance agreement tracker
+
+### Enable the preview site
+
+1. Open **Settings → Pages** for this repository.
+2. Under **Build and deployment → Source**, select **GitHub Actions**.
+3. Open **Actions → Deploy HVAC concept previews** and select **Run workflow**.
+
+The workflow publishes `site/` to the GitHub Pages project URL:
+`https://yerageracharan.github.io/agent-9-sales-lead-qualification/`
+
+Individual previews live under `/previews/<company-slug>/`. The site is intentionally marked `noindex` and is publicly accessible to anyone with the URL once Pages is enabled. Do not enter real customer information.
