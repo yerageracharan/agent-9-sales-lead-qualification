@@ -29,7 +29,7 @@ h1,h2,h3{font-weight:700}
 .masthead{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:23px;line-height:1;color:var(--ink);letter-spacing:-.02em}
 .brand-mark{display:block;width:10px;height:25px;background:var(--signal);border:1px solid var(--ink)}
-.mast-link{font-size:13px;color:var(--steel);text-decoration:none}
+ .mast-link{font-size:13px;color:var(--steel);text-decoration:none}
 .mast-link:hover{color:var(--ink);text-decoration:underline}
 .hero{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:clamp(26px,4vw,58px);align-items:stretch;padding:62px 0 58px;border-bottom:1px solid var(--line)}
 .hero-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0}
@@ -131,7 +131,7 @@ h1,h2,h3{font-weight:700}
 .process-step strong{display:block;font-size:12px;color:#fff;margin-bottom:5px}
 .process-step.done{border-color:var(--good)}
 .process-step.current{border-color:var(--signal)}
-.message{margin-top:20px;padding:17px 18px;border-left:4px solid var(--signal);background:rgba(255,255,255,.08);color:#EFF3EF}
+.message{margin-top:20px;padding:17px 18px;border-left:2px solid var(--signal);background:rgba(255,255,255,.08);color:#EFF3EF}
 .message span{display:block;font-size:11px;color:#F2C982;margin-bottom:6px}
 .message p{font-size:13px;line-height:1.6;margin:0}
 .board-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:12px}
@@ -192,7 +192,7 @@ h1,h2,h3{font-weight:700}
 .directory-row p{font-size:13px;color:var(--steel);line-height:1.5;margin:0}
 .directory-row a{font-size:12px;font-weight:700;white-space:nowrap}
 .directory-row a:hover{color:var(--signal-ink)}
-.landing-note{margin:0 0 45px;padding:15px 18px;border-left:4px solid var(--signal);background:#DDE4DF;color:var(--steel);font-size:12px;line-height:1.65}
+.landing-note{margin:0 0 45px;padding:15px 18px;border-left:2px solid var(--signal);background:#DDE4DF;color:var(--steel);font-size:12px;line-height:1.65}
 .landing-note strong{color:var(--ink)}
 @media(max-width:900px){
   .hero,.landing-hero{grid-template-columns:1fr}
@@ -209,7 +209,7 @@ h1,h2,h3{font-weight:700}
   :root{--gutter:18px}
   .masthead{height:62px}
   .brand{font-size:20px}
-  .mast-link{font-size:11px}
+   .mast-link{font-size:12px}
   .hero{padding:36px 0 35px}
   .hero h1{font-size:54px}
   .hero-copy>p{font-size:15px}
@@ -326,6 +326,8 @@ h1,h2,h3{font-weight:700}
 .hero-art--calendar .month.visit{border-color:var(--signal-ink)}
 .hero-art--calendar .month.renew{border-color:var(--signal-ink)}
 .page-booking .hero-art .art-heading,
+.page-booking .scene-board .property-number small,
+.page-booking .scene-board .property-details span,
 .page-booking .hero-art .dispatch-route span,
 .page-booking .hero-art .hero-note,
 .page-booking .scene-board .scene-top,
@@ -340,5 +342,6 @@ h1,h2,h3{font-weight:700}
 .page-booking .scene-board .message{color:#F5F7F5}
 @media(max-width:580px){
   .paper-sheet{padding:18px}
-  .page-property .hero-art--paper .property-details{padding:14px 0 0;border-left:0}
+  .page-property .hero-art--paper .property-details{padding:14px 16px 0;border-left:0}
+  .property-details{padding:14px 16px 0}
 }
