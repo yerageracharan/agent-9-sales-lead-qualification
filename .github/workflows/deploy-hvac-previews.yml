@@ -21,7 +21,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://yerageracharan.github.io/agent-9-sales-lead-qualification/
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
