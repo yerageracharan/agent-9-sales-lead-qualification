@@ -1,0 +1,78 @@
+name: Prospect discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      niche:
+        description: Business niche (for example, HVAC contractor)
+        required: true
+        type: string
+        default: HVAC contractor
+      metro:
+        description: US city or metro area (for example, Dallas, TX)
+        required: true
+        type: string
+      max_candidates:
+        description: Maximum candidate businesses to inspect
+        required: true
+        type: choice
+        options:
+          - "5"
+          - "10"
+          - "15"
+          - "20"
+        default: "10"
+      pages_per_site:
+        description: Maximum same-site pages per business
+        required: true
+        type: choice
+        options:
+          - "2"
+          - "3"
+          - "4"
+          - "5"
+        default: "3"
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TAVILY_API_KEY: \${{ secrets.TAVILY_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Discover and inspect prospects
+        run: |
+          python run_discovery.py \
+            --niche "\${{ inputs.niche }}" \
+            --metro "\${{ inputs.metro }}" \
+            --limit "\${{ inputs.max_candidates }}" \
+            --pages "\${{ inputs.pages_per_site }}" \
+            --output output
+
+      - name: Upload prospect report
+        uses: actions/upload-artifact@v4
+        with:
+          name: prospects-\${{ github.run_number }}
+          path: |
+            output/prospects.csv
+            output/prospects.json
+          if-no-files-found: error
+          retention-days: 14
