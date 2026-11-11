@@ -35,8 +35,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run Impeccable static detector
-        run: npx --yes impeccable detect site/
+      - name: Run site for rendered inspection
+        run: |
+          python3 -m http.server 4173 --directory site >/tmp/fieldwork-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          npx --yes impeccable detect http://127.0.0.1:4173/
       - name: Check the design contract
         run: node scripts/design-guard.mjs
       - name: Install Playwright
