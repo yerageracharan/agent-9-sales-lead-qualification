@@ -30,6 +30,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Run Impeccable static detector
+        run: npx --yes impeccable detect site/
       - name: Check the design contract
         run: node scripts/design-guard.mjs
       - name: Install Playwright
