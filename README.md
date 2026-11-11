@@ -147,3 +147,27 @@ py -m pytest
 ## Important
 
 This is an MVP research assistant, not a fully autonomous prospecting agent. It helps answer: "Can I find a legitimate way to reach this company, and what did its own website actually show?" A person must still verify the business, its decision-maker, and whether the contact route is monitored.
+
+
+## Run live prospect discovery on GitHub's cloud compute
+
+The repository includes a GitHub Actions workflow. After adding the secret once, GitHub's hosted runner will search the web, inspect candidate company websites, and provide CSV/JSON output as a downloadable workflow artifact.
+
+### One-time secret setup
+
+1. Revoke any Tavily key that has been shared in a chat or other public place.
+2. Generate a replacement key in your Tavily dashboard.
+3. Open this repository's **Settings → Secrets and variables → Actions**.
+4. Select **New repository secret**.
+5. Name it exactly TAVILY_API_KEY and paste the replacement key as its value.
+6. Save. The key is encrypted by GitHub and is not written into repository files.
+
+### Run the cloud research job
+
+1. Open the repository's **Actions** tab.
+2. Select **Prospect discovery**.
+3. Click **Run workflow**.
+4. Enter the niche and US metro area, then choose the number of candidates and pages.
+5. After the workflow completes, open the run and download the prospects artifact.
+
+The workflow uses GitHub-hosted compute. It does not run on your PC. Search candidates and contact-route findings are leads requiring human review; a published email is not verified as monitored. The workflow does not send outreach or submit enquiry forms.
