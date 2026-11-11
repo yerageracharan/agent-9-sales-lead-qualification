@@ -1,6 +1,6 @@
 # Agent 09 — Prospect Scout
 
-An evidence-first prospect research workspace for finding reachable small-business prospects without paid lead databases or API keys.
+An evidence-first prospect research workspace for finding reachable small-business prospects. Live web discovery uses an optional Tavily API key; Tavily currently offers 1,000 free API credits per month without requiring a credit card.
 
 **Initial focus:** independent US HVAC contractors and their non-phone digital contact routes.
 
@@ -17,8 +17,9 @@ The app does not claim that an email inbox is monitored, that a social page is a
 
 ## What it does
 
-- Generates Google search links for a niche and US metro area.
-- Accepts official business website URLs pasted by the researcher.
+- Searches the public web through Tavily for a niche and US metro area.
+- Displays source URLs, snippets, and search relevance for manual review.
+- Accepts confirmed official business website URLs from search results or manual input.
 - Checks a maximum of six pages on each same-site domain.
 - Reads the site's robots.txt policy before crawling.
 - Extracts publicly displayed business email addresses and mailto links.
@@ -55,7 +56,21 @@ py -m streamlit run app.py
 
 Open the local URL printed by Streamlit, usually http://localhost:8501.
 
-Or double-click run_windows.bat.
+### Enable live web search
+
+1. Create a free Tavily account at https://www.tavily.com/ and copy your API key from its dashboard.
+2. In the same PowerShell window, set the key before starting the app:
+
+~~~powershell
+$env:TAVILY_API_KEY = "tvly-your-key-here"
+py -m streamlit run app.py
+~~~
+
+You can also add TAVILY_API_KEY to Streamlit secrets when deploying the app. Never paste the key into source code, commit it to GitHub, or share it in a chat.
+
+Tavily currently lists 1,000 API credits per month on its free Researcher plan, with no credit card required. Prospect Scout makes two basic search requests per discovery run; website scanning is separate and does not use Tavily credits.
+
+Or double-click run_windows.bat after setting TAVILY_API_KEY in the PowerShell session that launches it.
 
 ## How to use it
 
@@ -68,7 +83,7 @@ Or double-click run_windows.bat.
 7. Review the evidence, score, and recommended digital route.
 8. Download the results as CSV.
 
-The initial search step is deliberately human-guided. This version does not automatically harvest search-engine or directory listings. That keeps the workflow transparent and avoids depending on brittle scraping or paid search APIs.
+The web-discovery step is powered by Tavily's Search API. The app sends two targeted queries per search run, displays the returned pages, and lets you select the results you have confirmed are official company websites. Search results may include directories or irrelevant pages, so review them before scanning. The scanner then inspects only the selected public websites.
 
 ## Reachability score
 
