@@ -33,7 +33,7 @@ for (const [pattern,label] of banned) check(!pattern.test(css), `CSS contains fo
 check(/html,body\s*\{[^}]*overflow-x\s*:\s*clip/s.test(css),"html and body must clip horizontal overflow");
 check(/:focus-visible\s*\{/.test(css),"visible focus style is required");
 check(/prefers-reduced-motion\s*:\s*reduce/.test(css),"reduced-motion support is required");
-check(/transition\s*:\s*(?:opacity|transform)/.test(css),"scene transition must be limited to opacity or transform");
+check(/animation-duration:\s*\.01ms/.test(css),"reduced-motion fallback must suppress scene motion");
 check(!/data-demo-form|data-load-sample|local-only interaction/i.test(pages.map(p=>readFileSync(join(root,p),"utf8")).join("\n")),"old CRUD demo forms must be removed");
 check(js.includes('ArrowRight') && js.includes('ArrowLeft'),"keyboard scene navigation is required");
 
